@@ -84,19 +84,19 @@ export default {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
 
-        // if (temp >= 65 && temp <= 122) {
-        //   temp = ((temp - 65 + shift * modif) % 58) + 65;
-        // }
+        if (temp >= 65 && temp <= 122)
+          temp = ((temp - 65 + shift * modif) % 57) + 65;
+        else temp = '?';
 
-        if (temp >= 65 && temp <= 90) {
-          // Uppercase
-          temp = ((temp - 65 + shift * modif) % 26) + 65;
-        } else if (temp >= 97 && temp <= 122) {
-          // Lowercase
-          temp = ((temp - 97 + shift * modif) % 26) + 97;
-        } else {
-          temp = '?';
-        }
+        // if (temp >= 65 && temp <= 90) {
+        //   // Uppercase
+        //   temp = ((temp - 65 + shift * modif) % 26) + 65;
+        // } else if (temp >= 97 && temp <= 122) {
+        //   // Lowercase
+        //   temp = ((temp - 97 + shift * modif) % 26) + 97;
+        // } else {
+        //   temp = '?';
+        // }
 
         output += String.fromCharCode(temp);
       }
@@ -107,7 +107,7 @@ export default {
       // return input
       //   .replace(/[^A-Z]/g, '')
       //   .replace(/./g, a =>
-      //     String.fromCharCode(65 + ((a.charCodeAt(0) - 65 + sign * shift) % 26))
+      //     String.fromCharCode(65 + ((a.charCodeAt(0) - 65 + shift * sign) % 26))
       //   );
 
       // Encrypting
@@ -131,9 +131,12 @@ export default {
     cipherTritemius(input, key, mode) {},
 
     bruteForce(cipherFunc, input, length, mode) {
+      console.log('>> Brute Force');
+      let resultsTable = [];
       for (let i = 0; i < length; i++) {
-        console.log(i + ': ' + cipherFunc(input, i, mode, i));
+        resultsTable.push(cipherFunc(input, i, mode, i));
       }
+      console.table(resultsTable);
     }
   }
 };
