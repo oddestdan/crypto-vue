@@ -7,7 +7,7 @@
       <h2>Key</h2>
       <textarea rows="10" v-model="key"></textarea>
     </div>
-    <select name="action" id="action" v-model="action">
+    <select name="mode" id="mode" v-model="mode">
       <option value="Encrypt">Encrypt</option>
       <option value="Decrypt">Decrypt</option>
     </select>
@@ -15,14 +15,15 @@
       <option value="Caesar">Caesar</option>
       <option value="Tritemius">Tritemius</option>
     </select>
-    <button @click="applyAction" type="button" id="applyActionButton">
-      {{ action }}
+    <button @click="applyCipher" type="button" id="applyCipherButton">
+      {{ mode }}
     </button>
   </div>
 </template>
 
 <script>
 // import TextReader from '@/components/TextReader';
+import generateLanguage from '@/utils/language.js';
 
 export default {
   components: {
@@ -32,112 +33,72 @@ export default {
   data() {
     return {
       inputMessage: '',
-      action: 'Encrypt',
+      mode: 'Encrypt',
       cipher: 'Caesar',
       key: ''
     };
   },
 
+  computed: {
+    language: () => generateLanguage()
+  },
+
   methods: {
-    applyAction() {
+    applyCipher() {
       switch (this.cipher) {
         case 'Caesar':
-          this.bruteForce(
-            this.cipherCaesar,
-            this.inputMessage,
-            26,
-            this.action
-          );
+          this.bruteForce(this.cipherCaesar, this.inputMessage, 26);
           this.inputMessage = this.cipherCaesar(
             this.inputMessage,
-            Number.parseInt(this.key),
-            this.action
+            Number.parseInt(this.key)
           );
           break;
         case 'Tritemius':
-          this.inputMessage = this.cipherTritemius(
-            this.inputMessage,
-            this.key,
-            this.action
-          );
+          this.inputMessage = this.cipherTritemius(this.inputMessage, this.key);
           break;
         default:
           this.inputMessage = this.cipherCaesar(
             this.inputMessage,
-            Number.parseInt(this.key),
-            this.action
+            Number.parseInt(this.key)
           );
           break;
       }
     },
 
-    cipherCaesar(input, shift, mode) {
-      let modif = mode === 'Encrypt' ? 1 : -1;
-      var output = '';
-      var temp = 0;
-      var i = 0;
+    cipherCaesar(input, shift) {
+      let modif = this.mode === 'Encrypt' ? 1 : -1;
+      let output = '';
+      let currCharIndex = 0;
 
-      //step through the string 1 character at a time
-      for (i = 0; i < input.length; i++) {
-        //store the ASCII value of each character
-        temp = input.charCodeAt(i);
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
+      // TODO: read more about methods
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
 
-        if (temp >= 65 && temp <= 122)
-          temp = ((temp - 65 + shift * modif) % 57) + 65;
-        else temp = '?';
+      // TODO: change to reducer
+      for (let i = 0; i < input.length; i++) {
+        currCharIndex = this.language.indexOf(input[i]);
+        currCharIndex = (currCharIndex + shift * modif) % this.language.length;
 
-        // if (temp >= 65 && temp <= 90) {
-        //   // Uppercase
-        //   temp = ((temp - 65 + shift * modif) % 26) + 65;
-        // } else if (temp >= 97 && temp <= 122) {
-        //   // Lowercase
-        //   temp = ((temp - 97 + shift * modif) % 26) + 97;
-        // } else {
-        //   temp = '?';
-        // }
-
-        output += String.fromCharCode(temp);
+        output += this.language.charAt(currCharIndex);
       }
-
       return output;
-
-      // let sign = mode === 'Encrypt' ? 1 : -1;
-      // return input
-      //   .replace(/[^A-Z]/g, '')
-      //   .replace(/./g, a =>
-      //     String.fromCharCode(65 + ((a.charCodeAt(0) - 65 + shift * sign) % 26))
-      //   );
-
-      // Encrypting
-      // if (mode == 'Encrypt') {
-      //   return (input + '').replace(/./g, s =>
-      //     String.fromCharCode(
-      //       s.charCodeAt(0) + (s.toLowerCase() < 'n' ? key : -key)
-      //     )
-      //   );
-      // }
-      // // Decrypting
-      // else {
-      //   return (input + '').replace(/./g, s =>
-      //     String.fromCharCode(
-      //       s.charCodeAt(0) + (s.toLowerCase() < 'n' ? -key : +key)
-      //     )
-      //   );
-      // }
     },
     // eslint-disable-next-line no-unused-vars
-    cipherTritemius(input, key, mode) {},
+    cipherTritemius(input, key) {},
 
-    bruteForce(cipherFunc, input, length, mode) {
-      console.log('>> Brute Force');
+    bruteForce(cipherFunc, input, length) {
+      console.log('>> Brute Force:');
       let resultsTable = [];
       for (let i = 0; i < length; i++) {
-        resultsTable.push(cipherFunc(input, i, mode, i));
+        resultsTable.push(cipherFunc(input, i, this.mode, i));
       }
       console.table(resultsTable);
     }
+  },
+
+  mounted() {
+    console.log('>> Language:');
+    console.table(this.language.split(''));
   }
 };
 </script>
