@@ -42,6 +42,12 @@ export default {
     applyAction() {
       switch (this.cipher) {
         case 'Caesar':
+          this.bruteForce(
+            this.cipherCaesar,
+            this.inputMessage,
+            26,
+            this.action
+          );
           this.inputMessage = this.cipherCaesar(
             this.inputMessage,
             Number.parseInt(this.key),
@@ -66,7 +72,6 @@ export default {
     },
 
     cipherCaesar(input, shift, mode) {
-      console.log(mode);
       let modif = mode === 'Encrypt' ? 1 : -1;
       var output = '';
       var temp = 0;
@@ -95,6 +100,7 @@ export default {
 
         output += String.fromCharCode(temp);
       }
+
       return output;
 
       // let sign = mode === 'Encrypt' ? 1 : -1;
@@ -122,7 +128,13 @@ export default {
       // }
     },
     // eslint-disable-next-line no-unused-vars
-    cipherTritemius(input, key, mode) {}
+    cipherTritemius(input, key, mode) {},
+
+    bruteForce(cipherFunc, input, length, mode) {
+      for (let i = 0; i < length; i++) {
+        console.log(i + ': ' + cipherFunc(input, i, mode, i));
+      }
+    }
   }
 };
 </script>
