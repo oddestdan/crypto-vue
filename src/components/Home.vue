@@ -1,5 +1,6 @@
 <template>
   <div class="home-wrapper">
+    <button @click="consoleLanguage" type="button">print lang</button>
     <div class="text-container">
       <h2>Input message</h2>
       <!-- <text-reader @load="inputMessage = $event"></text-reader> -->
@@ -93,12 +94,17 @@ export default {
         resultsTable.push(cipherFunc(input, i, this.mode, i));
       }
       console.table(resultsTable);
+    },
+
+    consoleLanguage() {
+      console.log('>> Language:');
+      console.table(this.language.split(''));
     }
   },
 
   mounted() {
-    console.log('>> Language:');
-    console.table(this.language.split(''));
+    // console.log('>> Language:');
+    // console.table(this.language.split(''));
   }
 };
 </script>
