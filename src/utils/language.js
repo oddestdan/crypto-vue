@@ -25,6 +25,8 @@ export default function language() {
   out.replace(re, '');
 
   // Add ukrainian, russian, etc
+  out += `абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ`;
+  out += `абвгґдеєжзиіїйклмнопрстуфхцчшщьюяАБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ`;
 
   return out;
 }

@@ -1,12 +1,14 @@
 <template>
   <div class="home-wrapper">
     <button @click="consoleLanguage" type="button">print lang</button>
+    <button @click="bruteForce" type="button">brute force</button>
     <div class="text-container">
       <h2>Input message</h2>
-      <!-- <text-reader @load="inputMessage = $event"></text-reader> -->
-      <textarea rows="15" v-model="inputMessage"></textarea>
+      <!-- <text-reader @load="message = $event"></text-reader> -->
+      <textarea rows="15" v-model="message"></textarea>
       <h2>Key</h2>
-      <textarea rows="10" v-model="key"></textarea>
+      <!-- <textarea rows="10" v-model="key"></textarea> -->
+      <input type="number" v-model="key" />
     </div>
     <select name="mode" id="mode" v-model="mode">
       <option value="Encrypt">Encrypt</option>
@@ -33,41 +35,43 @@ export default {
 
   data() {
     return {
-      inputMessage: '',
+      initialInput: '',
+      message: '',
+      key: '',
       mode: 'Encrypt',
-      cipher: 'Caesar',
-      key: ''
+      cipher: 'Caesar'
     };
   },
 
   computed: {
-    language: () => generateLanguage()
+    language: () => generateLanguage(),
+    cipherFunc: function() {
+      let func;
+      switch (this.cipher) {
+        case 'Caesar':
+          func = this.cipherCaesar;
+          break;
+        case 'Tritemius':
+          func = this.cipherTritemius;
+          break;
+        default:
+          func = this.cipherCaesar;
+          break;
+      }
+      return func;
+    }
   },
 
   methods: {
     applyCipher() {
-      switch (this.cipher) {
-        case 'Caesar':
-          this.bruteForce(this.cipherCaesar, this.inputMessage, 26);
-          this.inputMessage = this.cipherCaesar(
-            this.inputMessage,
-            Number.parseInt(this.key)
-          );
-          break;
-        case 'Tritemius':
-          this.inputMessage = this.cipherTritemius(this.inputMessage, this.key);
-          break;
-        default:
-          this.inputMessage = this.cipherCaesar(
-            this.inputMessage,
-            Number.parseInt(this.key)
-          );
-          break;
-      }
+      this.initialInput = this.message;
+
+      this.message = this.cipherFunc(this.message, this.key);
     },
 
-    cipherCaesar(input, shift) {
-      let modif = this.mode === 'Encrypt' ? 1 : -1;
+    cipherCaesar(input, key) {
+      const shift = Number.parseInt(key);
+      const modif = this.mode === 'Encrypt' ? 1 : -1;
       let output = '';
       let currCharIndex = 0;
 
@@ -87,11 +91,14 @@ export default {
     // eslint-disable-next-line no-unused-vars
     cipherTritemius(input, key) {},
 
-    bruteForce(cipherFunc, input, length) {
+    bruteForce() {
+      const resultsTable = [];
+      const length = this.language.length;
+      const n = length < this.key ? length : this.key;
+
       console.log('>> Brute Force:');
-      let resultsTable = [];
-      for (let i = 0; i < length; i++) {
-        resultsTable.push(cipherFunc(input, i, this.mode, i));
+      for (let i = 0; i <= n; i++) {
+        resultsTable.push(this.cipherFunc(this.initialInput, i, this.mode, i));
       }
       console.table(resultsTable);
     },
@@ -103,8 +110,7 @@ export default {
   },
 
   mounted() {
-    // console.log('>> Language:');
-    // console.table(this.language.split(''));
+    // this.consoleLanguage();
   }
 };
 </script>
