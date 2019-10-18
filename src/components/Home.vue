@@ -52,6 +52,8 @@
 // import TextReader from '@/components/TextReader';
 import generateLanguage from '@/utils/language.js';
 
+import Caesar from '@/ciphers/Caesar.js';
+
 export default {
   components: {
     // TextReader
@@ -92,42 +94,26 @@ export default {
     applyCipher() {
       this.initialInput = this.message;
 
-      this.message = this.cipherDelegate(this.message, this.key);
+      this.message = this.cipherDelegate(this.message, this.key, this.language, this.mode);
     },
 
-    cipherCaesar(input, key) {
-      const length = this.language.length;
-      const modif = this.mode === 'Encrypt' ? 1 : -1;
-
-      let output = '';
-      let currCharIndex = 0;
-      let shift = Number.parseInt(key);
-
-      if (shift < 0) shift = length + (shift % length);
-
-      // TODO: (?) change to reducer
-      for (let i = 0; i < input.length; i++) {
-        currCharIndex = this.language.indexOf(input[i]);
-
-        // Some symbol not found in the language
-        if (currCharIndex < 0) {
-          output += input[i]; // Leave it as it is
-        } else {
-          currCharIndex = (currCharIndex + shift * modif) % length;
-          // Special check for negative, out of bounds index (due to % modulo)
-          if (currCharIndex < 0) currCharIndex += length;
-
-          output += this.language.join('').charAt(currCharIndex);
-        }
-      }
-      return output;
-    },
+    cipherCaesar: (input, key, language, mode) => Caesar(input, key, language, mode),
     // eslint-disable-next-line no-unused-vars
     cipherTritemius(input, key) {},
 
     bruteForce() {
       const resultsTable = [];
-      const n = this.key;
+      const length = this.language.length;
+      let n;
+
+      // Choose to iterate over they key or the language
+      // (depending on what is shorter)
+      if (length < Math.abs(this.key)) {
+        n = length;
+        if (this.key < 0) n *= -1;
+      } else {
+        n = this.key;
+      }
 
       console.log('>> Brute Force:');
       if (n < 0) {
