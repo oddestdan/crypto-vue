@@ -1,26 +1,43 @@
 <template>
-  <div class="home-wrapper">
-    <button @click="consoleLanguage" type="button">print lang</button>
-    <button @click="bruteForce" type="button">brute force</button>
-    <div class="text-container">
-      <h2>Input message</h2>
-      <!-- <text-reader @load="message = $event"></text-reader> -->
-      <textarea rows="15" v-model="message"></textarea>
-      <h2>Key</h2>
-      <!-- <textarea rows="10" v-model="key"></textarea> -->
-      <input type="number" v-model="key" />
+  <div class="home">
+    <div v-if="DEBUG" class="debug-buttons">
+      <button @click="consoleLanguage" type="button">print lang</button>
+      <button @click="bruteForce" type="button">brute force</button>
     </div>
-    <select name="mode" id="mode" v-model="mode">
-      <option value="Encrypt">Encrypt</option>
-      <option value="Decrypt">Decrypt</option>
-    </select>
-    <select name="cipher" id="cipher" v-model="cipher">
-      <option value="Caesar">Caesar</option>
-      <option value="Tritemius">Tritemius</option>
-    </select>
-    <button @click="applyCipher" type="button" id="applyCipherButton">
-      {{ mode }}
-    </button>
+    <div class="message-key-container -br">
+      <div class="message-container">
+        <h2>Message</h2>
+        <div class="message">
+          <textarea rows="20" v-model="message"></textarea>
+        </div>
+      </div>
+      <div class="key-container">
+        <h2>Key</h2>
+        <div class="key">
+          <input type="number" v-model="key" />
+        </div>
+      </div>
+      <!-- <text-reader @load="message = $event"></text-reader> -->
+    </div>
+
+    <div class="actions-container -br">
+      <!-- TODO: create a separate component for selection -->
+      <div class="select-container">
+        <h4>Select action</h4>
+        <select name="mode" id="mode" v-model="mode">
+          <option value="Encrypt">Encrypt</option>
+          <option value="Decrypt">Decrypt</option>
+        </select>
+      </div>
+      <div class="select-container">
+        <h4>Select cipher</h4>
+        <select name="cipher" id="cipher" v-model="cipher">
+          <option value="Caesar">Caesar</option>
+          <option value="Tritemius">Tritemius</option>
+        </select>
+      </div>
+      <button @click="applyCipher" type="button" id="applyCipherButton">{{ mode }}</button>
+    </div>
   </div>
 </template>
 
@@ -39,13 +56,16 @@ export default {
       message: '',
       key: '',
       mode: 'Encrypt',
-      cipher: 'Caesar'
+      cipher: 'Caesar',
+      ciphers: ['Caesar', 'Tritemius'],
+
+      DEBUG: true
     };
   },
 
   computed: {
     language: () => generateLanguage(),
-    cipherFunc: function() {
+    cipherDelegate: function() {
       let func;
       switch (this.cipher) {
         case 'Caesar':
@@ -66,12 +86,18 @@ export default {
     applyCipher() {
       this.initialInput = this.message;
 
-      this.message = this.cipherFunc(this.message, this.key);
+      this.message = this.cipherDelegate(this.message, this.key);
     },
 
     cipherCaesar(input, key) {
-      const shift = Number.parseInt(key);
+      const length = this.language.length;
       const modif = this.mode === 'Encrypt' ? 1 : -1;
+
+      // const shift = Number.parseInt(key);
+      let shift = Number.parseInt(key);
+      console.log(`>> SHIFT %: ${shift % length}`);
+      if (shift < 0) shift = length + (shift % length);
+      console.log(`>> SHIFT  : ${shift}`);
       let output = '';
       let currCharIndex = 0;
 
@@ -79,12 +105,20 @@ export default {
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
       // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
 
-      // TODO: change to reducer
+      // TODO: (?) change to reducer
       for (let i = 0; i < input.length; i++) {
         currCharIndex = this.language.indexOf(input[i]);
-        currCharIndex = (currCharIndex + shift * modif) % this.language.length;
 
-        output += this.language.charAt(currCharIndex);
+        // Some symbol not found in the language
+        if (currCharIndex < 0) {
+          output += input[i]; // Leave it as it is
+        } else {
+          currCharIndex = (currCharIndex + shift * modif) % length;
+          // Special check for negative, out of bounds index (due to % modulo)
+          if (currCharIndex < 0) currCharIndex += length;
+
+          output += this.language.charAt(currCharIndex);
+        }
       }
       return output;
     },
@@ -93,12 +127,27 @@ export default {
 
     bruteForce() {
       const resultsTable = [];
-      const length = this.language.length;
-      const n = length < this.key ? length : this.key;
+      // const length = this.language.length;
+      let n;
+
+      // Choose to iterate over they key or the language
+      // (depending on what is shorter)
+      // if (length < Math.abs(this.key)) {
+      // n = length;
+      // if (this.key < 0) n *= -1;
+      // } else {
+      n = this.key;
+      // }
 
       console.log('>> Brute Force:');
-      for (let i = 0; i <= n; i++) {
-        resultsTable.push(this.cipherFunc(this.initialInput, i, this.mode, i));
+      if (n < 0) {
+        for (let i = 0; i >= n; i--) {
+          resultsTable.push(this.cipherDelegate(this.initialInput, i, this.mode, i));
+        }
+      } else {
+        for (let i = 0; i <= n; i++) {
+          resultsTable.push(this.cipherDelegate(this.initialInput, i, this.mode, i));
+        }
       }
       console.table(resultsTable);
     },
@@ -116,17 +165,68 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.home-wrapper {
-  margin-top: 60px;
-}
 textarea {
   resize: none;
-}
-textarea {
   box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 5px;
+  border: none;
+  width: calc(100% - 20px);
+  padding: 5px 10px;
   font-size: 14px;
   font-family: 'Helvetica Now', Montserrat, Arial, sans-serif;
+}
+input {
+  width: calc(100% - 20px);
+  min-height: 24px;
+  outline: none;
+  padding: 5px 10px;
+  border: none;
+}
+h2 {
+  width: calc(100% - 20px);
+  text-align: center;
+  color: #ffffff;
+}
+h4 {
+  text-align: center;
+  color: #ffffff;
+  margin-block-start: 0;
+  margin-block-end: 0.67em;
+}
+select {
+  padding: 5px 10px;
+  height: auto;
+}
+.home {
+  padding: 20px;
+  color: #ffffff;
+}
+.message-key-container {
+  display: flex;
+  justify-content: space-between;
+}
+.message-container {
+  width: 60%;
+  // padding: 0 10px;
+}
+.key-container {
+  width: 30%;
+  // padding: 0 40px;
+}
+.actions-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.select-container {
+  text-align: center;
+
+  //
+}
+
+/* debug */
+.debug-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 400px;
 }
 </style>
