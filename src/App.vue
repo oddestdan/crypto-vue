@@ -16,6 +16,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'vue-select/src/scss/vue-select.scss';
+
 body {
   margin: 0;
   background-color: #0e83cd;
@@ -68,16 +70,16 @@ light {
 }
 
 /* General button style (reset) */
-button {
+.custom-button {
   border: none;
   font-family: inherit;
   font-size: inherit;
   color: inherit;
   background: none;
   cursor: pointer;
-  padding: 20px 40px;
+  padding: 20px 20px;
   display: inline-block;
-  // margin: 15px 30px;
+  margin: 0 5px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
@@ -120,16 +122,34 @@ button {
   }
 
   &:hover:after {
-    height: 260%;
+    height: 230%;
     opacity: 1;
   }
 
   &:active:after {
-    height: 400%;
+    height: 300%;
     opacity: 1;
   }
 }
 
 /* Custom select styling (reset) */
-// TODO: create later
+.v-select {
+  width: 170px;
+
+  .vs__dropdown-toggle {
+    padding: 8px 4px;
+    background-color: none;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 0;
+
+    .vs__selected {
+      color: #ffffff;
+    }
+
+    .vs__open-indicator {
+      fill: #ffffff;
+    }
+  }
+}
 </style>

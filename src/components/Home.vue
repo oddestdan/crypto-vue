@@ -1,10 +1,6 @@
 <template>
   <div class="home">
-    <div v-if="DEBUG" class="debug-buttons">
-      <button @click="consoleLanguage" type="button">print lang</button>
-      <button @click="bruteForce" type="button">brute force</button>
-    </div>
-    <div class="message-key-container -br">
+    <div class="message-key-container">
       <div class="message-container">
         <h2>Message</h2>
         <div class="message">
@@ -21,22 +17,33 @@
     </div>
 
     <div class="actions-container -br">
-      <!-- TODO: create a separate component for selection -->
       <div class="select-container">
         <h4>Select action</h4>
-        <select name="mode" id="mode" v-model="mode">
-          <option value="Encrypt">Encrypt</option>
-          <option value="Decrypt">Decrypt</option>
-        </select>
+        <v-select
+          v-model="mode"
+          :clearable="false"
+          :placeholder="mode"
+          :options="['Encrypt', 'Decrypt']"
+        ></v-select>
       </div>
       <div class="select-container">
         <h4>Select cipher</h4>
-        <select name="cipher" id="cipher" v-model="cipher">
-          <option value="Caesar">Caesar</option>
-          <option value="Tritemius">Tritemius</option>
-        </select>
+        <v-select
+          v-model="cipher"
+          :clearable="false"
+          :placeholder="cipher"
+          :options="['Caesar', 'Tritemius']"
+        ></v-select>
       </div>
-      <button @click="applyCipher" type="button" id="applyCipherButton">{{ mode }}</button>
+      <div class="action-buttons-container">
+        <button class="custom-button" @click="applyCipher" type="button" id="applyCipherButton">
+          {{ mode }} text
+        </button>
+        <div v-if="DEBUG" class="debug-buttons">
+          <button class="custom-button" @click="consoleLanguage" type="button">print lang</button>
+          <button class="custom-button" @click="bruteForce" type="button">brute force</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -57,7 +64,6 @@ export default {
       key: '',
       mode: 'Encrypt',
       cipher: 'Caesar',
-      ciphers: ['Caesar', 'Tritemius'],
 
       DEBUG: true
     };
@@ -171,7 +177,7 @@ textarea {
   border: none;
   width: calc(100% - 20px);
   padding: 5px 10px;
-  font-size: 14px;
+  font-size: 16px;
   font-family: 'Helvetica Now', Montserrat, Arial, sans-serif;
 }
 input {
@@ -192,10 +198,6 @@ h4 {
   margin-block-start: 0;
   margin-block-end: 0.67em;
 }
-select {
-  padding: 5px 10px;
-  height: auto;
-}
 .home {
   padding: 20px;
   color: #ffffff;
@@ -206,27 +208,37 @@ select {
 }
 .message-container {
   width: 60%;
-  // padding: 0 10px;
 }
 .key-container {
   width: 30%;
-  // padding: 0 40px;
 }
 .actions-container {
   display: flex;
   justify-content: space-around;
+  flex-wrap: wrap;
   align-items: center;
 }
 .select-container {
   text-align: center;
-
-  //
 }
-
-/* debug */
-.debug-buttons {
+.action-buttons-container {
   display: flex;
-  justify-content: space-around;
-  margin: 0 400px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.debug-buttons {
+  .custom-button {
+    color: #2ecc71;
+
+    &:after {
+      background: #2ecc71;
+      color: #ffffff;
+    }
+
+    &:hover,
+    &:active {
+      color: #0e83cd;
+    }
+  }
 }
 </style>
