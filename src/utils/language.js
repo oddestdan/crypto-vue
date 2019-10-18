@@ -1,5 +1,6 @@
 export default function language() {
-  let out = '';
+  let lang = '';
+
   const LOWER_BOUND = 33; // first symbol after non-printables
   const HIGHER_BOUND = 132; //400
 
@@ -8,26 +9,31 @@ export default function language() {
 
   const SPECIALS = [`'`, `"`, `\``, `\\`];
   const isSpecial = char => SPECIALS.includes(char);
-  const filterSpecial = text =>
-    text
+  const removeSpecials = lang =>
+    lang
       .split('')
       .filter(el => !isSpecial(el))
       .join('');
+  const removeDuplicates = lang => [...new Set(lang.split(''))].join('');
+  // OR: lang.split('').filter((char, index) => lang.indexOf(char) === index).join('');
 
   // Generate most used symbols and english
   for (let i = LOWER_BOUND; i < HIGHER_BOUND; i++) {
-    out += String.fromCharCode(i);
+    lang += String.fromCharCode(i);
   }
-  // Remove special symbols (quotes and \)
-  out = filterSpecial(out);
+
+  lang = removeSpecials(lang);
 
   // Remove non-printables
-  out.replace(re, '');
+  lang.replace(re, '');
 
-  // Manually add ukrainian, russian, etc
-  out += `абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ`;
-  out += `абвгґдеєжзиіїйклмнопрстуфхцчшщьюяАБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ`;
-  out += ' ';
+  // Manually add russian, ukrainian, etc
+  lang += `абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ`; // russian
+  lang += `абвгґдеєжзиіїйклмнопрстуфхцчшщьюяАБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ`;
+  // lang += `ґєіїҐЄІЇ`; // ukrainian (excluding russian)
+  lang += ' \n\t';
 
-  return out;
+  lang = removeDuplicates(lang);
+
+  return lang;
 }

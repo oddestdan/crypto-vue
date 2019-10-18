@@ -1,0 +1,15 @@
+int i, j, k
+fixed fCon
+label LB
+{
+  j = 4
+  i = - j + 9 * (- 7 + 8)
+  for k = 0 by 1 while k <= 8 do oput >> k
+  if j > 10 then goto LB
+  iput << j
+  goto LB
+  oput >> 42
+  @LB
+  oput >> j >> 3.1E-1
+}
+​
