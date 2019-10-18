@@ -99,17 +99,11 @@ export default {
       const length = this.language.length;
       const modif = this.mode === 'Encrypt' ? 1 : -1;
 
-      // const shift = Number.parseInt(key);
-      let shift = Number.parseInt(key);
-      console.log(`>> SHIFT %: ${shift % length}`);
-      if (shift < 0) shift = length + (shift % length);
-      console.log(`>> SHIFT  : ${shift}`);
       let output = '';
       let currCharIndex = 0;
+      let shift = Number.parseInt(key);
 
-      // TODO: read more about methods
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charCodeAt
+      if (shift < 0) shift = length + (shift % length);
 
       // TODO: (?) change to reducer
       for (let i = 0; i < input.length; i++) {
@@ -123,7 +117,7 @@ export default {
           // Special check for negative, out of bounds index (due to % modulo)
           if (currCharIndex < 0) currCharIndex += length;
 
-          output += this.language.charAt(currCharIndex);
+          output += this.language.join('').charAt(currCharIndex);
         }
       }
       return output;
@@ -133,17 +127,7 @@ export default {
 
     bruteForce() {
       const resultsTable = [];
-      // const length = this.language.length;
-      let n;
-
-      // Choose to iterate over they key or the language
-      // (depending on what is shorter)
-      // if (length < Math.abs(this.key)) {
-      // n = length;
-      // if (this.key < 0) n *= -1;
-      // } else {
-      n = this.key;
-      // }
+      const n = this.key;
 
       console.log('>> Brute Force:');
       if (n < 0) {
@@ -160,7 +144,7 @@ export default {
 
     consoleLanguage() {
       console.log('>> Language:');
-      console.table(this.language.split(''));
+      console.table(this.language);
     }
   },
 
