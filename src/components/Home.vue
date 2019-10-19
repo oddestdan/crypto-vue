@@ -61,7 +61,6 @@ export default {
 
   data() {
     return {
-      initialInput: '',
       message: '',
       key: '',
       mode: 'Encrypt',
@@ -92,8 +91,6 @@ export default {
 
   methods: {
     applyCipher() {
-      this.initialInput = this.message;
-
       this.message = this.cipherDelegate(this.message, this.key, this.language, this.mode);
     },
 
@@ -103,27 +100,10 @@ export default {
 
     bruteForce() {
       const resultsTable = [];
-      const length = this.language.length;
-      let n;
-
-      // Choose to iterate over they key or the language
-      // (depending on what is shorter)
-      if (length < Math.abs(this.key)) {
-        n = length;
-        if (this.key < 0) n *= -1;
-      } else {
-        n = this.key;
-      }
 
       console.log('>> Brute Force:');
-      if (n < 0) {
-        for (let i = 0; i >= n; i--) {
-          resultsTable.push(this.cipherDelegate(this.initialInput, i, this.mode, i));
-        }
-      } else {
-        for (let i = 0; i <= n; i++) {
-          resultsTable.push(this.cipherDelegate(this.initialInput, i, this.mode, i));
-        }
+      for (let i = 0; i <= this.language.length; i++) {
+        resultsTable.push(this.cipherDelegate(this.message, i, this.language, this.mode));
       }
       console.table(resultsTable);
     },
