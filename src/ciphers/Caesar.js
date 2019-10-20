@@ -1,5 +1,5 @@
-export default function cipherCaesar(input, key, language, mode) {
-  const length = language.length;
+export default function cipherCaesar(input, key, alphabet, mode) {
+  const length = alphabet.length;
   const modif = mode === 'Encrypt' ? 1 : -1;
 
   let output = '';
@@ -8,19 +8,18 @@ export default function cipherCaesar(input, key, language, mode) {
 
   if (shift < 0) shift = length + (shift % length);
 
-  // TODO: (?) change to reducer
   for (let i = 0; i < input.length; i++) {
-    currCharIndex = language.indexOf(input[i]);
+    currCharIndex = alphabet.indexOf(input[i]);
 
-    // Some symbol not found in the language
-    if (currCharIndex < 0) {
-      output += input[i]; // Leave it as it is
-    } else {
+    // Character is found in the alphabet
+    if (currCharIndex >= 0) {
       currCharIndex = (currCharIndex + shift * modif) % length;
-      // Special check for negative, out of bounds index (due to % modulo)
+      // Special check for negative, out of bounds index (due to %)
       if (currCharIndex < 0) currCharIndex += length;
 
-      output += language.join('').charAt(currCharIndex);
+      output += alphabet.join('').charAt(currCharIndex);
+    } else {
+      output += input[i]; // Leave it as it is
     }
   }
   return output;

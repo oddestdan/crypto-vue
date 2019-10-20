@@ -32,13 +32,11 @@
           v-model="cipher"
           :clearable="false"
           :placeholder="cipher"
-          :options="['Caesar', 'Tritemius']"
+          :options="['Caesar', 'Trithemius']"
         ></v-select>
       </div>
       <div class="action-buttons-container">
-        <button class="custom-button" @click="applyCipher" type="button" id="applyCipherButton">
-          {{ mode }} text
-        </button>
+        <button class="custom-button" @click="applyCipher" type="button">{{ mode }} text</button>
         <div v-if="DEBUG" class="debug-buttons">
           <button class="custom-button" @click="consoleLanguage" type="button">print lang</button>
           <button class="custom-button" @click="bruteForce" type="button">brute force</button>
@@ -50,9 +48,10 @@
 
 <script>
 // import TextReader from '@/components/TextReader';
-import generateLanguage from '@/utils/language.js';
+import generateAlphabet from '@/utils/alphabet.js';
 
 import Caesar from '@/ciphers/Caesar.js';
+import Trithemius from '@/ciphers/Trithemius.js';
 
 export default {
   components: {
@@ -64,25 +63,25 @@ export default {
       message: '',
       key: '',
       mode: 'Encrypt',
-      cipher: 'Caesar',
+      cipher: 'Trithemius',
 
       DEBUG: true
     };
   },
 
   computed: {
-    language: () => generateLanguage(),
+    alphabet: () => generateAlphabet(),
     cipherDelegate: function() {
       let func;
       switch (this.cipher) {
         case 'Caesar':
           func = this.cipherCaesar;
           break;
-        case 'Tritemius':
-          func = this.cipherTritemius;
+        case 'Trithemius':
+          func = this.cipherTrithemius;
           break;
         default:
-          func = this.cipherCaesar;
+          func = this.cipherTrithemius;
           break;
       }
       return func;
@@ -91,26 +90,26 @@ export default {
 
   methods: {
     applyCipher() {
-      this.message = this.cipherDelegate(this.message, this.key, this.language, this.mode);
+      this.message = this.cipherDelegate(this.message, this.key, this.alphabet, this.mode);
     },
 
-    cipherCaesar: (input, key, language, mode) => Caesar(input, key, language, mode),
-    // eslint-disable-next-line no-unused-vars
-    cipherTritemius(input, key) {},
+    // Ciphers
+    cipherCaesar: (input, key, alphabet, mode) => Caesar(input, key, alphabet, mode),
+    cipherTrithemius: (input, key, alphabet, mode) => Trithemius(input, key, alphabet, mode),
 
     bruteForce() {
       const resultsTable = [];
 
       console.log('>> Brute Force:');
-      for (let i = 0; i <= this.language.length; i++) {
-        resultsTable.push(this.cipherDelegate(this.message, i, this.language, this.mode));
+      for (let i = 0; i <= this.alphabet.length; i++) {
+        resultsTable.push(this.cipherDelegate(this.message, i, this.alphabet, this.mode));
       }
       console.table(resultsTable);
     },
 
     consoleLanguage() {
-      console.log('>> Language:');
-      console.table(this.language);
+      console.log('>> Alphabet:');
+      console.table(this.alphabet);
     }
   },
 
