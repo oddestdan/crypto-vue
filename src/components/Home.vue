@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       message: 'Encrypt me!..',
-      key: 'some key', // TODO: set to '' later
+      key: '',
       mode: 'Encrypt',
       cipher: 'Trithemius',
 
@@ -120,7 +120,6 @@ export default {
       // if (this.cipher === 'Trithemius') this.key = this.trithCoefs;
       if (this.cipher === 'Trithemius')
         if (this.trithemiusOption === 'Coefficients') this.key = this.trithCoefs;
-      // else if (this.trithemiusOption === 'Motto') this.key = 'some key'; // TODO: remove later
 
       this.message = this.cipherDelegate(this.message, this.key, this.alphabet, this.mode);
     },
@@ -144,6 +143,8 @@ export default {
       console.table(this.alphabet);
     }
 
+    // TODO: Load language only once?
+    // TODO: Remove from computed and assign when mounted?
     // getLanguage: () => generateAlphabet()
   },
 
@@ -219,6 +220,10 @@ h4 {
 
 .trithemius-options {
   margin-top: 10px;
+}
+
+.coef {
+  margin-bottom: 10px;
 }
 
 /* debug */

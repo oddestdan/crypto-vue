@@ -39,25 +39,25 @@ export default function cipherCaesar(input, key, alphabet, mode) {
     // Character is found in the alphabet
     if (currCharIndex >= 0) {
       if (isVigenere) {
-        shift = alphabet.indexOf(key[i]);
-        res = alphabet.indexOf(input[i]);
+        shift = alphabet.indexOf(key[i] & key.length);
       } else {
         // Integer from some key-function
         shift = key.reduce(keyFunction(i), 0);
       }
 
       if (shift < 0) shift = length + (shift % length);
+
       // Encrypted char position from alphabet
-      res = (length + currCharIndex + shift * modif) % length;
+      res = (length + currCharIndex + ((shift * modif) % length)) % length;
       // Char on position 'res' in alphabet
       currChar = alphabet.join('').charAt(res);
+
+      output += currChar;
 
       console.log(`'${input[i]}' -- ${currCharIndex} -- ${shift} -- ${res} -- '${currChar}'`);
     } else {
       output += input[i]; // Leave it as it is
     }
-
-    output += currChar;
   }
   return output;
 }
