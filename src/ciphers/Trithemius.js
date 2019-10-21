@@ -1,11 +1,27 @@
 export default function cipherCaesar(input, key, alphabet, mode) {
   const length = alphabet.length;
   const modif = mode === 'Encrypt' ? 1 : -1;
+  const isVigenere = typeof key === 'object' ? false : true;
 
-  console.log(`Function: '${key}'`);
+  let keyFunction;
 
+  // Parsing coefficients
+  if (!isVigenere) key = key.map(el => Number(el));
+  keyFunction = p => (accum, el, i) => accum + el * p ** i;
+
+  // Map key coefficients from String to Number
   // Some key function, returns Integer
-  const sOFp = p => 2 * p + 3;
+  // let keyFunction = p => {
+  //   let res = 0;
+  //   for (let i = 0; i < key.length; i++) {
+  //     res += key[i] * p ** i;
+  //     console.log(`current res is ${res}`);
+  //   }
+  //   return res;
+  // };
+
+  // const pReducer = getReducer(p);
+  // key.reduce(pReducer, 0);
 
   let output = '';
   let currCharIndex = 0;
@@ -22,15 +38,21 @@ export default function cipherCaesar(input, key, alphabet, mode) {
 
     // Character is found in the alphabet
     if (currCharIndex >= 0) {
-      // Integer from some key-function
-      shift = sOFp(i);
+      if (isVigenere) {
+        shift = alphabet.indexOf(key[i]);
+        res = alphabet.indexOf(input[i]);
+      } else {
+        // Integer from some key-function
+        shift = key.reduce(keyFunction(i), 0);
+      }
+
       if (shift < 0) shift = length + (shift % length);
       // Encrypted char position from alphabet
-      res = (currCharIndex + shift * modif) % length;
+      res = (length + currCharIndex + shift * modif) % length;
       // Char on position 'res' in alphabet
       currChar = alphabet.join('').charAt(res);
 
-      console.log(`${currCharIndex} -- ${shift} -- ${res} -- ${currChar}`);
+      console.log(`'${input[i]}' -- ${currCharIndex} -- ${shift} -- ${res} -- '${currChar}'`);
     } else {
       output += input[i]; // Leave it as it is
     }

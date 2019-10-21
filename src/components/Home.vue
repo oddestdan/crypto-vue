@@ -8,9 +8,33 @@
         </div>
       </div>
       <div class="key-container">
-        <h2>Key</h2>
-        <div class="key">
-          <input type="number" v-model="key" />
+        <div class="key" v-if="cipher === `Caesar`">
+          <h2>Key</h2>
+          <div class="caesar-key">
+            <input type="number" v-model="key" />
+          </div>
+        </div>
+        <div class="trithemius" v-else-if="cipher === `Trithemius`">
+          <h2>Coefficients</h2>
+          <div class="trithemius-coefficients" v-if="trithemiusOption === 'Coefficients'">
+            <span>ax²</span>
+            <input class="coef" type="number" v-model="trithCoefs[2]" />
+            <span>bx</span>
+            <input class="coef" type="number" v-model="trithCoefs[1]" />
+            <span>c</span>
+            <input class="coef" type="number" v-model="trithCoefs[0]" />
+          </div>
+          <div class="trithemius-coefficients" v-else-if="trithemiusOption === 'Motto'">
+            <input type="text" v-model="key" />
+          </div>
+          <div class="trithemius-options">
+            <v-select
+              v-model="trithemiusOption"
+              :clearable="false"
+              :placeholder="trithemiusOption"
+              :options="['Motto', 'Coefficients']"
+            ></v-select>
+          </div>
         </div>
       </div>
       <!-- <text-reader @load="message = $event"></text-reader> -->
@@ -60,10 +84,13 @@ export default {
 
   data() {
     return {
-      message: '',
-      key: '',
+      message: 'Encrypt me!..',
+      key: 'some key', // TODO: set to '' later
       mode: 'Encrypt',
       cipher: 'Trithemius',
+
+      trithCoefs: [2, 3, 0],
+      trithemiusOption: 'Coefficients',
 
       DEBUG: true
     };
@@ -90,6 +117,11 @@ export default {
 
   methods: {
     applyCipher() {
+      // if (this.cipher === 'Trithemius') this.key = this.trithCoefs;
+      if (this.cipher === 'Trithemius')
+        if (this.trithemiusOption === 'Coefficients') this.key = this.trithCoefs;
+      // else if (this.trithemiusOption === 'Motto') this.key = 'some key'; // TODO: remove later
+
       this.message = this.cipherDelegate(this.message, this.key, this.alphabet, this.mode);
     },
 
@@ -111,6 +143,8 @@ export default {
       console.log('>> Alphabet:');
       console.table(this.alphabet);
     }
+
+    // getLanguage: () => generateAlphabet()
   },
 
   mounted() {
@@ -175,6 +209,19 @@ h4 {
   justify-content: space-between;
   flex-wrap: wrap;
 }
+
+.trithemius-coefficients {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.trithemius-options {
+  margin-top: 10px;
+}
+
+/* debug */
 .debug-buttons {
   .custom-button {
     color: #2ecc71;
