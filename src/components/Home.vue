@@ -62,7 +62,7 @@
       <div class="action-buttons-container">
         <button class="custom-button" @click="applyCipher" type="button">{{ mode }} text</button>
         <div v-if="DEBUG" class="debug-buttons">
-          <button class="custom-button" @click="consoleLanguage" type="button">print lang</button>
+          <button class="custom-button" @click="consoleAlphabet" type="button">print lang</button>
           <button class="custom-button" @click="bruteForce" type="button">brute force</button>
         </div>
       </div>
@@ -76,6 +76,7 @@ import generateAlphabet from '@/utils/alphabet.js';
 
 import Caesar from '@/ciphers/Caesar.js';
 import Trithemius from '@/ciphers/Trithemius.js';
+import XOR from '@/ciphers/XOR.js';
 
 export default {
   components: {
@@ -88,6 +89,7 @@ export default {
       key: '',
       mode: 'Encrypt',
       cipher: 'Trithemius',
+      alphabet: () => {},
 
       trithCoefs: [2, 3, 0],
       trithemiusOption: 'Coefficients',
@@ -97,7 +99,6 @@ export default {
   },
 
   computed: {
-    alphabet: () => generateAlphabet(),
     cipherDelegate: function() {
       let func;
       switch (this.cipher) {
@@ -106,6 +107,9 @@ export default {
           break;
         case 'Trithemius':
           func = this.cipherTrithemius;
+          break;
+        case 'XOR':
+          func = this.cipherXOR;
           break;
         default:
           func = this.cipherTrithemius;
@@ -117,7 +121,6 @@ export default {
 
   methods: {
     applyCipher() {
-      // if (this.cipher === 'Trithemius') this.key = this.trithCoefs;
       if (this.cipher === 'Trithemius')
         if (this.trithemiusOption === 'Coefficients') this.key = this.trithCoefs;
 
@@ -127,6 +130,7 @@ export default {
     // Ciphers
     cipherCaesar: (input, key, alphabet, mode) => Caesar(input, key, alphabet, mode),
     cipherTrithemius: (input, key, alphabet, mode) => Trithemius(input, key, alphabet, mode),
+    cipherXOR: (input, key, alphabet, mode) => XOR(input, key, alphabet, mode),
 
     bruteForce() {
       const resultsTable = [];
@@ -138,19 +142,21 @@ export default {
       console.table(resultsTable);
     },
 
-    consoleLanguage() {
+    consoleAlphabet() {
       console.log('>> Alphabet:');
       console.table(this.alphabet);
     }
-
-    // TODO: Load language only once?
-    // TODO: Remove from computed and assign when mounted?
-    // getLanguage: () => generateAlphabet()
   },
 
   mounted() {
-    // this.consoleLanguage();
+    console.log('Creating alphabet....');
+    this.alphabet = generateAlphabet();
+    console.log('Alphabet created.');
+
+    // this.consoleAlphabet();
   }
+
+  // created() {}
 };
 </script>
 

@@ -1,5 +1,7 @@
 export default function language() {
-  let lang = [];
+  let alph = [];
+
+  console.log('Creating alphabet....');
 
   const LOWER_BOUND = 33; // first symbol after non-printables
   const HIGHER_BOUND = 300; // 65535
@@ -10,31 +12,32 @@ export default function language() {
   const SPECIALS = [`'`, `"`, `\``, `\\`];
   const isSpecial = char => SPECIALS.includes(char);
 
-  const removeSpecials = lang => lang.filter(el => !isSpecial(el));
-  const removeDuplicates = lang => [...new Set(lang)];
-  // OR: lang.split('').filter((char, index) => lang.indexOf(char) === index).join('');
-  const removeNonPrints = lang =>
-    lang
+  const removeSpecials = alph => alph.filter(el => !isSpecial(el));
+  const removeDuplicates = alph => [...new Set(alph)];
+  // OR: alph.split('').filter((char, index) => alph.indexOf(char) === index).join('');
+  const removeNonPrints = alph =>
+    alph
       .join('')
       .replace(re, '')
       .split('');
 
   // Generate most used symbols and english
   for (let i = LOWER_BOUND; i < HIGHER_BOUND; i++) {
-    lang.push(String.fromCharCode(i));
+    alph.push(String.fromCharCode(i));
   }
 
   // Manually add russian, ukrainian, etc
-  lang.push(...`абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ`.split('')); // russian
-  lang.push(...`абвгґдеєжзиіїйклмнопрстуфхцчшщьюяАБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ`.split(''));
-  // lang += `ґєіїҐЄІЇ`; // ukrainian (excluding russian)
+  alph.push(...`абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ`.split('')); // russian
+  alph.push(...`абвгґдеєжзиіїйклмнопрстуфхцчшщьюяАБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ`.split(''));
+  // alph += `ґєіїҐЄІЇ`; // ukrainian (excluding russian)
 
-  lang = removeDuplicates(lang);
-  lang = removeNonPrints(lang);
-  lang = removeSpecials(lang);
+  alph = removeDuplicates(alph);
+  alph = removeNonPrints(alph);
+  alph = removeSpecials(alph);
 
   // Manually add a few whitespace characters
-  lang.push(...` \n\t`.split(''));
+  alph.push(...` \n\t`.split(''));
 
-  return lang;
+  console.log('Alphabet created.');
+  return alph;
 }

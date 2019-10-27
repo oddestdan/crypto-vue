@@ -1,4 +1,4 @@
-export default function cipherCaesar(input, key, alphabet, mode) {
+export default function XOR(input, key, alphabet, mode) {
   const length = alphabet.length;
   const modif = mode === 'Encrypt' ? 1 : -1;
   const isVigenere = typeof key === 'object' ? false : true;
@@ -8,17 +8,6 @@ export default function cipherCaesar(input, key, alphabet, mode) {
   // Parsing coefficients
   if (!isVigenere) key = key.map(el => Number(el));
   keyFunction = p => (accum, el, i) => accum + el * p ** i;
-
-  // Map key coefficients from String to Number
-  // Some key function, returns Integer
-  // let keyFunction = p => {
-  //   let res = 0;
-  //   for (let i = 0; i < key.length; i++) {
-  //     res += key[i] * p ** i;
-  //     console.log(`current res is ${res}`);
-  //   }
-  //   return res;
-  // };
 
   // const pReducer = getReducer(p);
   // key.reduce(pReducer, 0);
@@ -54,7 +43,8 @@ export default function cipherCaesar(input, key, alphabet, mode) {
 
       output += currChar;
 
-      console.log(`'${input[i]}' -- ${currCharIndex} -- ${shift} -- ${res} -- '${currChar}'`);
+      // Console debug output
+      // console.log(`'${input[i]}' -- ${currCharIndex} -- ${shift} -- ${res} -- '${currChar}'`);
     } else {
       output += input[i]; // Leave it as it is
     }
