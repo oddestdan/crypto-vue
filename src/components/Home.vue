@@ -14,20 +14,21 @@
             <input type="number" v-model="key" />
           </div>
         </div>
+
         <div class="trithemius" v-else-if="cipher === `Trithemius`">
           <h2>Coefficients</h2>
-          <div class="trithemius-coefficients" v-if="trithemiusOption === 'Coefficients'">
+          <div class="-col-between" v-if="trithemiusOption === 'Coefficients'">
             <span>ax²</span>
-            <input class="coef" type="number" v-model="trithCoefs[2]" />
+            <input class="-bot10" type="number" v-model="trithCoefs[2]" />
             <span>bx</span>
-            <input class="coef" type="number" v-model="trithCoefs[1]" />
+            <input class="-bot10" type="number" v-model="trithCoefs[1]" />
             <span>c</span>
-            <input class="coef" type="number" v-model="trithCoefs[0]" />
+            <input class="-bot10" type="number" v-model="trithCoefs[0]" />
           </div>
-          <div class="trithemius-coefficients" v-else-if="trithemiusOption === 'Motto'">
+          <div class="-col-between" v-else-if="trithemiusOption === 'Motto'">
             <input type="text" v-model="key" />
           </div>
-          <div class="trithemius-options">
+          <div class="-top10">
             <v-select
               v-model="trithemiusOption"
               :clearable="false"
@@ -36,12 +37,20 @@
             ></v-select>
           </div>
         </div>
+
+        <div class="-col-between -h-max" v-if="cipher === `XOR`">
+          <h2>Generate gamma</h2>
+          <div class="center-container">
+            <textarea class="-bot10" rows="16" v-model="key" disabled></textarea>
+            <button class="custom-button" @click="key = generateGamma(message)">generate</button>
+          </div>
+        </div>
       </div>
       <!-- <text-reader @load="message = $event"></text-reader> -->
     </div>
 
     <div class="actions-container -br">
-      <div class="select-container">
+      <div class="center-container">
         <h4>Select action</h4>
         <v-select
           v-model="mode"
@@ -50,13 +59,13 @@
           :options="['Encrypt', 'Decrypt']"
         ></v-select>
       </div>
-      <div class="select-container">
+      <div class="center-container">
         <h4>Select cipher</h4>
         <v-select
           v-model="cipher"
           :clearable="false"
           :placeholder="cipher"
-          :options="['Caesar', 'Trithemius']"
+          :options="['Caesar', 'Trithemius', 'XOR']"
         ></v-select>
       </div>
       <div class="action-buttons-container">
@@ -88,7 +97,7 @@ export default {
       message: 'Encrypt me!..',
       key: '',
       mode: 'Encrypt',
-      cipher: 'Trithemius',
+      cipher: 'XOR',
       alphabet: () => {},
 
       trithCoefs: [2, 3, 0],
@@ -131,6 +140,29 @@ export default {
     cipherCaesar: (input, key, alphabet, mode) => Caesar(input, key, alphabet, mode),
     cipherTrithemius: (input, key, alphabet, mode) => Trithemius(input, key, alphabet, mode),
     cipherXOR: (input, key, alphabet, mode) => XOR(input, key, alphabet, mode),
+
+    generateGamma: (input /*, alphabet*/) => {
+      // const generated = [];
+      // for (let i = 0; i < input.length; i++) {
+      //   generated.push(alphabet.charAt(Math.floor(Math.random() * alphabet.length)));
+      // }
+      // return generated.join('');
+
+      // dec2hex :: Integer -> String
+      // i.e. 0-255 -> '00'-'ff'
+      function dec2hex(dec) {
+        return ('0' + dec.toString(16)).substr(-2);
+      }
+
+      // generateId :: Integer -> String
+      function generateId(len = 40) {
+        let arr = new Uint8Array((len + 1) / 2);
+        window.crypto.getRandomValues(arr);
+        return Array.from(arr, dec2hex).join('');
+      }
+
+      return generateId(input.length);
+    },
 
     bruteForce() {
       const resultsTable = [];
@@ -208,28 +240,13 @@ h4 {
   flex-wrap: wrap;
   align-items: center;
 }
-.select-container {
+.center-container {
   text-align: center;
 }
 .action-buttons-container {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-}
-
-.trithemius-coefficients {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.trithemius-options {
-  margin-top: 10px;
-}
-
-.coef {
-  margin-bottom: 10px;
 }
 
 /* debug */

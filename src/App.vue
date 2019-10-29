@@ -68,6 +68,30 @@ light {
   margin-top: 20px;
   padding-top: 20px;
 }
+.-top10 {
+  margin-top: 10px;
+}
+.-bot10 {
+  margin-bottom: 10px;
+}
+.-col-between {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.-row-between {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.-h-max {
+  height: 100%;
+}
+.-w-max {
+  width: 100%;
+}
 
 /* General button style (reset) */
 .custom-button {

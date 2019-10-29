@@ -1,8 +1,6 @@
 export default function language() {
   let alph = [];
 
-  console.log('Creating alphabet....');
-
   const LOWER_BOUND = 33; // first symbol after non-printables
   const HIGHER_BOUND = 300; // 65535
 
@@ -38,6 +36,5 @@ export default function language() {
   // Manually add a few whitespace characters
   alph.push(...` \n\t`.split(''));
 
-  console.log('Alphabet created.');
   return alph;
 }

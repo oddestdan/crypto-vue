@@ -28,7 +28,7 @@ export default function XOR(input, key, alphabet, mode) {
     // Character is found in the alphabet
     if (currCharIndex >= 0) {
       if (isVigenere) {
-        shift = alphabet.indexOf(key[i] & key.length);
+        shift = alphabet.indexOf(key[i % key.length]);
       } else {
         // Integer from some key-function
         shift = key.reduce(keyFunction(i), 0);
