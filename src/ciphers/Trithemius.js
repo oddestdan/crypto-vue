@@ -9,9 +9,6 @@ export default function XOR(input, key, alphabet, mode) {
   if (!isVigenere) key = key.map(el => Number(el));
   keyFunction = p => (accum, el, i) => accum + el * p ** i;
 
-  // const pReducer = getReducer(p);
-  // key.reduce(pReducer, 0);
-
   let output = '';
   let currCharIndex = 0;
   let shift = 0;

@@ -141,27 +141,22 @@ export default {
     cipherTrithemius: (input, key, alphabet, mode) => Trithemius(input, key, alphabet, mode),
     cipherXOR: (input, key, alphabet, mode) => XOR(input, key, alphabet, mode),
 
-    generateGamma: (input /*, alphabet*/) => {
-      // const generated = [];
-      // for (let i = 0; i < input.length; i++) {
-      //   generated.push(alphabet.charAt(Math.floor(Math.random() * alphabet.length)));
-      // }
-      // return generated.join('');
+    // TODO: Add cipher pad like in Vernam's cipher
 
-      // dec2hex :: Integer -> String
-      // i.e. 0-255 -> '00'-'ff'
-      function dec2hex(dec) {
-        return ('0' + dec.toString(16)).substr(-2);
-      }
+    // Random string generator [0-9a-z]
+    generateGamma: input => {
+      // 0-255 -> '00'-'ff'
+      // let dec2hex = dec => ('0' + dec.toString(16)).substr(-2);
 
-      // generateId :: Integer -> String
-      function generateId(len = 40) {
-        let arr = new Uint8Array((len + 1) / 2);
-        window.crypto.getRandomValues(arr);
-        return Array.from(arr, dec2hex).join('');
-      }
+      // Integer -> String [0-9a-z]
+      let dec2alphanum = dec => ('0' + dec.toString(36)).substr(-2);
+      // Math.random().toString(36).substr(2, 2)
 
-      return generateId(input.length);
+      let arr = new Uint8Array(((input.length || 42) + 1) / 2);
+      window.crypto.getRandomValues(arr);
+      return Array.from(arr, dec2alphanum)
+        .join('')
+        .slice(0, -1);
     },
 
     bruteForce() {

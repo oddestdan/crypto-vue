@@ -8,6 +8,10 @@ export default function cipherXOR(input, key, alphabet, mode) {
   const alength = alphabet.length;
   const modif = mode === 'Encrypt' ? 1 : -1;
 
+  // Debug
+  console.log(`>> LEN of INPUT: ${input.length}`);
+  console.log(`>> LEN of KEY  : ${key.length}`);
+
   let output = '';
   let currCharIndex = 0;
   let res = 0;
@@ -33,17 +37,16 @@ export default function cipherXOR(input, key, alphabet, mode) {
     // Character is found in the alphabet
     if (currCharIndex >= 0) {
       shift = alphabet.indexOf(key[i % key.length]);
-      // console.log(`${shift} || ${key[i]}`);
       if (shift < 0) shift = alength + (shift % alength);
 
       // Encrypted char position from alphabet
-      res = currCharIndex = (currCharIndex + shift * modif) % alength;
+      res = (alength + currCharIndex + ((shift * modif) % alength)) % alength;
       // Char on position 'res' in alphabet
       currChar = alphabet.join('').charAt(res);
 
       output += currChar;
 
-      // Console debug output
+      // Debug output
       console.log(`'${input[i]}' -- ${currCharIndex} -- ${shift} -- ${res} -- '${currChar}'`);
     } else {
       output += input[i]; // Leave it as it is
