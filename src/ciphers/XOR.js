@@ -9,8 +9,8 @@ export default function cipherXOR(input, key, alphabet, mode) {
   const modif = mode === 'Encrypt' ? 1 : -1;
 
   // Debug
-  console.log(`>> LEN of INPUT: ${input.length}`);
-  console.log(`>> LEN of KEY  : ${key.length}`);
+  // console.log(`>> LEN of INPUT: ${input.length}`);
+  // console.log(`>> LEN of KEY  : ${key.length}`);
 
   let output = '';
   let currCharIndex = 0;
@@ -20,14 +20,14 @@ export default function cipherXOR(input, key, alphabet, mode) {
 
   /* Encryption
    * Ci = (Ti + Gi) % N, where
-   * N = length; C, G, T are texts;
-   * Ci - encrypted[i], Ti - text[i], Gi - gamma[i];
-   * !!! if (Ci == 0) Ci = N
+   * * N = length; C, G, T are texts;
+   * * Ci - encrypted[i], Ti - text[i], Gi - gamma[i];
+   * * !!! if (Ci == 0) Ci = N
    */
 
   /* Decryption
    * Ti = (Ci - Gi + N) % N, where
-   * !!! if (Ti == 0) Ti = N
+   * * !!! if (Ti == 0) Ti = N
    */
 
   for (let i = 0; i < input.length; i++) {
@@ -42,7 +42,7 @@ export default function cipherXOR(input, key, alphabet, mode) {
       // Encrypted char position from alphabet
       res = (alength + currCharIndex + ((shift * modif) % alength)) % alength;
       // Char on position 'res' in alphabet
-      currChar = alphabet.join('').charAt(res);
+      currChar = alphabet[res];
 
       output += currChar;
 

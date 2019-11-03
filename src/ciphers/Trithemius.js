@@ -36,7 +36,7 @@ export default function XOR(input, key, alphabet, mode) {
       // Encrypted char position from alphabet
       res = (length + currCharIndex + ((shift * modif) % length)) % length;
       // Char on position 'res' in alphabet
-      currChar = alphabet.join('').charAt(res);
+      currChar = alphabet[res];
 
       output += currChar;
 

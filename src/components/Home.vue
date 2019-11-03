@@ -42,7 +42,7 @@
           <h2>Generate gamma</h2>
           <div class="center-container">
             <textarea class="-bot10" rows="16" v-model="key" disabled></textarea>
-            <button class="custom-button" @click="key = generateGamma(message)">generate</button>
+            <button class="custom-button" @click="key = generateGamma()">generate</button>
           </div>
         </div>
       </div>
@@ -144,19 +144,25 @@ export default {
     // TODO: Add cipher pad like in Vernam's cipher
 
     // Random string generator [0-9a-z]
-    generateGamma: input => {
-      // 0-255 -> '00'-'ff'
-      // let dec2hex = dec => ('0' + dec.toString(16)).substr(-2);
-
+    generateGamma() {
+      // // If generate gamma string as [0-9a-z]
       // Integer -> String [0-9a-z]
-      let dec2alphanum = dec => ('0' + dec.toString(36)).substr(-2);
-      // Math.random().toString(36).substr(2, 2)
+      // let dec2alphanum = dec => ('0' + dec.toString(36)).substr(-2);
 
-      let arr = new Uint8Array(((input.length || 42) + 1) / 2);
-      window.crypto.getRandomValues(arr);
-      return Array.from(arr, dec2alphanum)
-        .join('')
-        .slice(0, -1);
+      // let arr = new Uint8Array(((this.message.length || 42) + 1) / 2);
+      // window.crypto.getRandomValues(arr);
+      // return Array.from(arr, dec2alphanum)
+      //   .join('')
+      //   .slice(0, -1);
+
+      // // If generate gamma string from whole alphabet
+      const arr = [];
+      let randIndex;
+      for (let i = 0; i < this.message.length; i++) {
+        randIndex = Number.parseInt(Math.random() * this.alphabet.length);
+        arr[i] = this.alphabet[randIndex];
+      }
+      return arr.join('');
     },
 
     bruteForce() {

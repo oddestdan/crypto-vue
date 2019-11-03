@@ -17,7 +17,7 @@ export default function cipherCaesar(input, key, alphabet, mode) {
       // Special check for negative, out of bounds index (due to %)
       if (currCharIndex < 0) currCharIndex += length;
 
-      output += alphabet.join('').charAt(currCharIndex);
+      output += alphabet[currCharIndex];
     } else {
       output += input[i]; // Leave it as it is
     }
