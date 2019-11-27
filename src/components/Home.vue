@@ -40,7 +40,7 @@
 
         <div class="-col-between -h-max" v-if="cipher === `XOR`">
           <h2>Gamma</h2>
-          <div class="end-container">
+          <div class="center-container">
             <textarea class="-bot10" rows="16" v-model="key" disabled></textarea>
             <button class="custom-button -m0" @click="key = generateGamma()">generate gamma</button>
           </div>
@@ -48,9 +48,16 @@
 
         <div class="-col-between -h-max" v-if="cipher === `Book`">
           <h2>Poem</h2>
-          <div class="end-container">
+          <div class="center-container">
             <textarea class="-bot10" rows="16" v-model="key" disabled></textarea>
             <button class="custom-button -m0" @click="key = poem">generate poem</button>
+          </div>
+        </div>
+
+        <div v-if="cipher === `DES` || cipher === `TripleDES` || cipher === `AES`">
+          <h2>{{ cipher }} Passphrase</h2>
+          <div class="center-container">
+            <textarea rows="16" v-model="key"></textarea>
           </div>
         </div>
       </div>
@@ -73,7 +80,7 @@
           v-model="cipher"
           :clearable="false"
           :placeholder="cipher"
-          :options="['Caesar', 'Trithemius', 'XOR', 'Book']"
+          :options="['Caesar', 'Trithemius', 'XOR', 'Book', 'DES', 'TripleDES', 'AES']"
         ></v-select>
       </div>
       <div class="action-buttons-container">
@@ -97,6 +104,9 @@ import XOR from '@/ciphers/XOR.js';
 
 import Book from '@/ciphers/Book.js';
 import poem from '@/utils/poem.js';
+// import DES from '@/ciphers/DES.js';
+// import TripleDES from '@/ciphers/TripleDES.js';
+// import AES from '@/ciphers/AES.js';
 
 export default {
   components: {
@@ -106,9 +116,10 @@ export default {
   data() {
     return {
       message: 'Encrypt me!..',
-      key: '',
+      // key: '',
+      key: 'Share a secret with me!',
       mode: 'Encrypt',
-      cipher: 'Book',
+      cipher: 'DES',
       alphabet: () => {},
 
       trithCoefs: [2, 3, 0],
@@ -116,6 +127,7 @@ export default {
 
       poem: '',
 
+      selfUnit: this,
       DEBUG: true
     };
   },
@@ -137,8 +149,17 @@ export default {
         case 'Book':
           func = this.cipherBook;
           break;
+        case 'DES':
+          func = this.cipherDES;
+          break;
+        case 'TripleDES':
+          func = this.cipherTripleDES;
+          break;
+        case 'AES':
+          func = this.cipherAES;
+          break;
         default:
-          func = this.cipherTrithemius;
+          func = this.cipherDES;
           break;
       }
       return func;
@@ -163,8 +184,25 @@ export default {
     cipherTrithemius: (input, key, alphabet, mode) => Trithemius(input, key, alphabet, mode),
     cipherXOR: (input, key, alphabet, mode) => XOR(input, key, alphabet, mode),
     cipherBook: (input, key, alphabet, mode) => Book(input, key, alphabet, mode),
+    cipherDES(input, key, alphabet, mode) {
+      return this.AdvancedCipher(input, key, alphabet, mode);
+    },
+    cipherTripleDES(input, key, alphabet, mode) {
+      return this.AdvancedCipher(input, key, alphabet, mode);
+    },
+    cipherAES(input, key, alphabet, mode) {
+      return this.AdvancedCipher(input, key, alphabet, mode);
+    },
 
-    // TODO: Add cipher pad like in Vernam's cipher
+    // DES, TripleDES, and AES ciphers
+    AdvancedCipher(input, key, alphabet, mode) {
+      console.log(`>> alphabet L = ${alphabet.length} not needed in Advanced ciphers`);
+      const cipherFunc = this.CryptoJS[this.cipher];
+
+      return mode === 'Encrypt'
+        ? cipherFunc.encrypt(input, key).toString()
+        : cipherFunc.decrypt(input, key).toString(this.CryptoJS.enc.Utf8);
+    },
 
     // Random string generator
     generateGamma() {
@@ -235,7 +273,7 @@ input {
   border: none;
 }
 h2 {
-  width: calc(100% - 20px);
+  // width: calc(100% - 20px);
   text-align: center;
   color: #ffffff;
 }

@@ -13,6 +13,9 @@
  */
 
 export default function cipherBook(input, key, alphabet, mode) {
+  console.log(`alphabet of length ${alphabet.length} isn't needed in AES`);
+  console.log(`alphabet of length ${key} isn't needed in AES`);
+  console.log(`alphabet of length ${mode} isn't needed in AES`);
   // const alength = alphabet.length;
   // const modif = mode === 'Encrypt' ? 1 : -1;
 
