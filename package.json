@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
+    "vue-cryptojs": "^2.1.2",
     "vue-select": "^3.2.0",
     "vuex": "^3.0.1"
   },

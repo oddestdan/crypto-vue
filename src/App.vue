@@ -74,6 +74,9 @@ light {
 .-bot10 {
   margin-bottom: 10px;
 }
+.-m0 {
+  margin: 0 !important;
+}
 .-col-between {
   display: flex;
   flex-direction: column;

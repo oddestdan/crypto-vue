@@ -39,10 +39,18 @@
         </div>
 
         <div class="-col-between -h-max" v-if="cipher === `XOR`">
-          <h2>Generate gamma</h2>
-          <div class="center-container">
+          <h2>Gamma</h2>
+          <div class="end-container">
             <textarea class="-bot10" rows="16" v-model="key" disabled></textarea>
-            <button class="custom-button" @click="key = generateGamma()">generate</button>
+            <button class="custom-button -m0" @click="key = generateGamma()">generate gamma</button>
+          </div>
+        </div>
+
+        <div class="-col-between -h-max" v-if="cipher === `Book`">
+          <h2>Poem</h2>
+          <div class="end-container">
+            <textarea class="-bot10" rows="16" v-model="key" disabled></textarea>
+            <button class="custom-button -m0" @click="key = poem">generate poem</button>
           </div>
         </div>
       </div>
@@ -65,7 +73,7 @@
           v-model="cipher"
           :clearable="false"
           :placeholder="cipher"
-          :options="['Caesar', 'Trithemius', 'XOR']"
+          :options="['Caesar', 'Trithemius', 'XOR', 'Book']"
         ></v-select>
       </div>
       <div class="action-buttons-container">
@@ -87,6 +95,9 @@ import Caesar from '@/ciphers/Caesar.js';
 import Trithemius from '@/ciphers/Trithemius.js';
 import XOR from '@/ciphers/XOR.js';
 
+import Book from '@/ciphers/Book.js';
+import poem from '@/utils/poem.js';
+
 export default {
   components: {
     // TextReader
@@ -97,17 +108,20 @@ export default {
       message: 'Encrypt me!..',
       key: '',
       mode: 'Encrypt',
-      cipher: 'XOR',
+      cipher: 'Book',
       alphabet: () => {},
 
       trithCoefs: [2, 3, 0],
       trithemiusOption: 'Coefficients',
+
+      poem: '',
 
       DEBUG: true
     };
   },
 
   computed: {
+    // key: '',
     cipherDelegate: function() {
       let func;
       switch (this.cipher) {
@@ -120,6 +134,9 @@ export default {
         case 'XOR':
           func = this.cipherXOR;
           break;
+        case 'Book':
+          func = this.cipherBook;
+          break;
         default:
           func = this.cipherTrithemius;
           break;
@@ -130,8 +147,13 @@ export default {
 
   methods: {
     applyCipher() {
+      // Additional settings for different ciphers
+
+      // TODO: Can try to get rid of this line if use key[0] etc in lines 20+
       if (this.cipher === 'Trithemius')
         if (this.trithemiusOption === 'Coefficients') this.key = this.trithCoefs;
+
+      // if (this.cipher === 'Book') this.key = poem;
 
       this.message = this.cipherDelegate(this.message, this.key, this.alphabet, this.mode);
     },
@@ -140,12 +162,13 @@ export default {
     cipherCaesar: (input, key, alphabet, mode) => Caesar(input, key, alphabet, mode),
     cipherTrithemius: (input, key, alphabet, mode) => Trithemius(input, key, alphabet, mode),
     cipherXOR: (input, key, alphabet, mode) => XOR(input, key, alphabet, mode),
+    cipherBook: (input, key, alphabet, mode) => Book(input, key, alphabet, mode),
 
     // TODO: Add cipher pad like in Vernam's cipher
 
-    // Random string generator [0-9a-z]
+    // Random string generator
     generateGamma() {
-      // // If generate gamma string as [0-9a-z]
+      // // If generate gamma as [0-9a-z]
       // Integer -> String [0-9a-z]
       // let dec2alphanum = dec => ('0' + dec.toString(36)).substr(-2);
 
@@ -155,7 +178,7 @@ export default {
       //   .join('')
       //   .slice(0, -1);
 
-      // // If generate gamma string from whole alphabet
+      // // If generate gamma from whole alphabet
       const arr = [];
       let randIndex;
       for (let i = 0; i < this.message.length; i++) {
@@ -185,8 +208,9 @@ export default {
     console.log('Creating alphabet....');
     this.alphabet = generateAlphabet();
     console.log('Alphabet created.');
-
     // this.consoleAlphabet();
+
+    this.poem = poem;
   }
 
   // created() {}
@@ -222,7 +246,7 @@ h4 {
   margin-block-end: 0.67em;
 }
 .home {
-  padding: 20px;
+  padding: 0px 20px;
   color: #ffffff;
 }
 .message-key-container {
@@ -243,6 +267,9 @@ h4 {
 }
 .center-container {
   text-align: center;
+}
+.end-container {
+  text-align: end;
 }
 .action-buttons-container {
   display: flex;
