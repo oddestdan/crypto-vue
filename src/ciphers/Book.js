@@ -13,28 +13,44 @@
  */
 
 export default function cipherBook(input, poem, dictionary, mode) {
-  console.log(mode === 'Encrypt' ? 'encrypting...' : 'decrypting...');
-  console.dir(dictionary);
-  // const modif = mode === 'Encrypt' ? 1 : -1;
-
-  let lineByLinePoem = separateOnEnter(poem);
-  console.dir(lineByLinePoem);
+  const isEncrypting = mode === 'Encrypt' ? true : false;
 
   let output = [];
-  let letter;
-  for (let char of input) {
-    letter = letterFromDictionary(char, dictionary);
-    console.dir(letter);
-    output.push(`${letter.row}/${letter.col}`);
+  let letterObj;
+  if (isEncrypting) {
+    for (let char of input) {
+      shuffle(dictionary);
+      letterObj = findFromDictionary(x => x.char === char, dictionary);
+      // console.dir(letterObj);
+      output.push(`${letterObj.row}/${letterObj.col}`);
+    }
+    output = output.join(',');
+  } else {
+    let encodes = input.split(',');
+    console.dir(encodes);
+    for (let code of encodes) {
+      let props = code.split('/');
+      let row = +props[0]; // get letterObj's row as number
+      let col = +props[1]; // get letterObj's col as number
+      console.dir({ row, col });
+      letterObj = findFromDictionary(x => x.row === row && x.col === col, dictionary);
+      output.push(letterObj.char);
+    }
+    output = output.join('');
   }
-  return output.join(',');
+  return output;
 }
 
-const letterFromDictionary = (char, dict) => dict.find(x => x.char === char);
+const findFromDictionary = (predicate, dict) => dict.find(x => predicate(x));
 
-const separateOnEnter = poem => {
-  return poem.split('\n').map(line => (line + '\n').split(''));
-  // .split('\n')
-  // .map(line => line + '\n')
-  // .map(line => line.split(''));
+/**
+ * Shuffles array in place. ES6 version
+ * @param {Array} a items An array containing the items.
+ */
+const shuffle = a => {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 };
