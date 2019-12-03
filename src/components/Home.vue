@@ -115,7 +115,7 @@ export default {
 
   data() {
     return {
-      message: 'Encrypt me!..',
+      message: 'encrypt me...',
       // key: '',
       key: 'Share a secret with me!',
       mode: 'Encrypt',
@@ -174,7 +174,7 @@ export default {
       if (this.cipher === 'Trithemius')
         if (this.trithemiusOption === 'Coefficients') this.key = this.trithCoefs;
 
-      // if (this.cipher === 'Book') this.key = poem;
+      if (this.cipher === 'Book') this.key = poem; // Debug
       if (this.cipher === 'Book') this.alphabet = this.createBookDictionary(this.key);
 
       this.message = this.cipherDelegate(this.message, this.key, this.alphabet, this.mode);

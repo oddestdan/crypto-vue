@@ -14,21 +14,27 @@
 
 export default function cipherBook(input, poem, dictionary, mode) {
   console.log(mode === 'Encrypt' ? 'encrypting...' : 'decrypting...');
-  let lineByLinePoem = separateOnNextLine(poem);
   console.dir(dictionary);
-  // let dictionaty = createDictionary()
-
-  // const alength = dictionary.length;
   // const modif = mode === 'Encrypt' ? 1 : -1;
 
-  // Debug
-  // console.log({ poem });
+  let lineByLinePoem = separateOnEnter(poem);
+  console.dir(lineByLinePoem);
 
-  let output = '';
-  for (let i = 0; i < input.length; i++) output += input[i];
-  return output;
+  let output = [];
+  let letter;
+  for (let char of input) {
+    letter = letterFromDictionary(char, dictionary);
+    console.dir(letter);
+    output.push(`${letter.row}/${letter.col}`);
+  }
+  return output.join(',');
 }
 
-const separateOnNextLine = poem => {
-  return poem.split('\n').map(line => line + '\n');
+const letterFromDictionary = (char, dict) => dict.find(x => x.char === char);
+
+const separateOnEnter = poem => {
+  return poem.split('\n').map(line => (line + '\n').split(''));
+  // .split('\n')
+  // .map(line => line + '\n')
+  // .map(line => line.split(''));
 };
