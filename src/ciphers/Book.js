@@ -12,18 +12,23 @@
  * * 4.	Повторити п.п.1-3 для кожного елементу коду, відокремленого за допомогою ком.
  */
 
-export default function cipherBook(input, key, alphabet, mode) {
-  console.log(`alphabet of length ${alphabet.length} isn't needed in AES`);
-  console.log(`alphabet of length ${key} isn't needed in AES`);
-  console.log(`alphabet of length ${mode} isn't needed in AES`);
-  // const alength = alphabet.length;
+export default function cipherBook(input, poem, dictionary, mode) {
+  console.log(mode === 'Encrypt' ? 'encrypting...' : 'decrypting...');
+  let lineByLinePoem = separateOnNextLine(poem);
+  console.dir(dictionary);
+  // let dictionaty = createDictionary()
+
+  // const alength = dictionary.length;
   // const modif = mode === 'Encrypt' ? 1 : -1;
 
   // Debug
-  // console.log(`>> LEN of INPUT: ${input.length}`);
-  // console.log(`>> LEN of KEY  : ${key.length}`);
+  // console.log({ poem });
 
   let output = '';
   for (let i = 0; i < input.length; i++) output += input[i];
   return output;
 }
+
+const separateOnNextLine = poem => {
+  return poem.split('\n').map(line => line + '\n');
+};

@@ -119,7 +119,7 @@ export default {
       // key: '',
       key: 'Share a secret with me!',
       mode: 'Encrypt',
-      cipher: 'DES',
+      cipher: 'Book',
       alphabet: () => {},
 
       trithCoefs: [2, 3, 0],
@@ -175,6 +175,7 @@ export default {
         if (this.trithemiusOption === 'Coefficients') this.key = this.trithCoefs;
 
       // if (this.cipher === 'Book') this.key = poem;
+      if (this.cipher === 'Book') this.alphabet = this.createBookDictionary(this.key);
 
       this.message = this.cipherDelegate(this.message, this.key, this.alphabet, this.mode);
     },
@@ -224,6 +225,25 @@ export default {
         arr[i] = this.alphabet[randIndex];
       }
       return arr.join('');
+    },
+
+    // Poem dictionary creator
+    createBookDictionary(poem) {
+      const dictionary = [];
+      let row = 0;
+      let col = 0;
+
+      for (let char of poem.split('')) {
+        dictionary.push({ char, row, col });
+
+        // next step preparations
+        col++;
+        if (char === '\n') {
+          row++;
+          col = 0;
+        }
+      }
+      return dictionary;
     },
 
     bruteForce() {
