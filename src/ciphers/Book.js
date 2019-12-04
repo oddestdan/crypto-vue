@@ -27,6 +27,7 @@ const encrypt = (input, dict) => {
     shuffle(dict);
 
     letterObj = findFromDictionary(dict, x => x.char === char);
+    if (!letterObj) sendError(`Letter '${char}' isn't found in poem`);
     output.push(`${letterObj.row}/${letterObj.col}`);
   }
   return output.join(',');
@@ -62,4 +63,9 @@ const shuffle = a => {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+};
+
+const sendError = errorMessage => {
+  alert(errorMessage);
+  throw new Error(errorMessage);
 };

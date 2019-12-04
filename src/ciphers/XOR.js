@@ -8,10 +8,6 @@ export default function cipherXOR(input, key, alphabet, mode) {
   const alength = alphabet.length;
   const modif = mode === 'Encrypt' ? 1 : -1;
 
-  // Debug
-  // console.log(`>> LEN of INPUT: ${input.length}`);
-  // console.log(`>> LEN of KEY  : ${key.length}`);
-
   let output = '';
   let currCharIndex = 0;
   let res = 0;
